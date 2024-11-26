@@ -1,29 +1,15 @@
 "use client";
 
-import { useTheme } from "styled-components";
 import { Text, Box } from "@cruk/cruk-react-components";
 import { NasaResponse, NasaSearchParams } from "../types";
 import { urlNasaSearch } from "../services/nasa";
 import { useQuery } from "@tanstack/react-query";
 
-export function List() {
-  // let's see what the theme values are for image sizes
-  const theme = useTheme();
-  console.log('THEME VALUES:', theme);
-
-  // TODO: values need ot change accordign to form submits
-  const values: NasaSearchParams = {
-    keywords: "mars",
-    mediaType: "audio",
-    yearStart: 2000,
-  };
+export function List({ values }: { values?: NasaSearchParams }) {
 
   const urlNasaSearchUrl = values
     ? urlNasaSearch(values as NasaSearchParams)
     : "";
-
-  // TODO: is this needed? 
-  console.log("Search Input:", urlNasaSearchUrl); 
 
   const { data } = useQuery<NasaResponse>(
     ["nasaSearch", values],
@@ -31,8 +17,7 @@ export function List() {
     { enabled: !!urlNasaSearchUrl.length },
   );
 
-  // Basic list displays titles
-  // TODO: Show each media displayed as type.  
+  // Display media results
   return (
     <Box>
       {data?.collection.items.slice(0, 10).map((item, index) => (
@@ -40,7 +25,7 @@ export function List() {
           {item.data[0] && (
             <>
               <Text>{item.data[0].title}</Text>
-              {/* media_type handling */}
+              <Text>{item.data[0].description}</Text>
               {/* image */}
               {item.data[0].media_type === "image" && (
                 item.links ? (
@@ -73,7 +58,6 @@ export function List() {
                   <Text>Audio preview not available</Text>
                 )
               )}
-              <Text>{item.data[0].description}</Text>
             </>
           )}
         </Box>
