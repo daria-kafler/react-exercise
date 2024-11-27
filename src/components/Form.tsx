@@ -66,7 +66,6 @@ export function Form({
       yearStart: data.yearStart ? parseInt(data.yearStart) : 1900,
       mediaType: data.mediaType,
     });
-    // TODO: do something on sumbit
     };
     
   return (

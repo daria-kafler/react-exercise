@@ -17,6 +17,10 @@ export function List({ values }: { values?: NasaSearchParams }) {
     { enabled: !!urlNasaSearchUrl.length },
   );
 
+  const truncateDescription = (text: String, maxLength: number ) => 
+    text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+
+
   // Display media results
   return (
     <Box>
@@ -25,7 +29,6 @@ export function List({ values }: { values?: NasaSearchParams }) {
           {item.data[0] && (
             <>
               <Text>{item.data[0].title}</Text>
-              <Text>{item.data[0].description}</Text>
               {/* image */}
               {item.data[0].media_type === "image" && (
                 item.links ? (
@@ -50,16 +53,19 @@ export function List({ values }: { values?: NasaSearchParams }) {
               )}
               {/* audio */}
               {item.data[0].media_type === "audio" && (
-                item.links ? (
+                item.href ? (
+                  <>
                   <audio controls>
-                    <source src={item.links[0].href} />
+                    <source src={item.href} />
                   </audio>
+                  </>
                 ) : (
                   <Text>Audio preview not available</Text>
                 )
               )}
             </>
           )}
+          <Text>{truncateDescription(item.data[0].description, 500)}</Text> 
         </Box>
       ))}
     </Box>
