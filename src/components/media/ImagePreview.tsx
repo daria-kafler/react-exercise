@@ -7,14 +7,15 @@ interface ImagePreviewProps {
 }
 
 export const ImagePreview: React.FC<ImagePreviewProps> = ({ links, title }) => {
-    const imageURL = links?.[0]?.href;
+    // Check for link array and if has href
+    const imageLink = links && links[0]?.href;
     
-    if (!imageURL) {
+    if (!imageLink) {
         return <Text>Image preview not available</Text>
     }
     return  (
         <img 
-            src={imageURL}
+            src={imageLink}
             alt={title}
             style={{ maxWidth: '100%' }}
         />
