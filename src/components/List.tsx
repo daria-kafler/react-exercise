@@ -4,6 +4,8 @@ import { Text, Box, Heading } from "@cruk/cruk-react-components";
 import { NasaResponse, NasaSearchParams } from "../types";
 import { urlNasaSearch } from "../services/nasa";
 import { useQuery } from "@tanstack/react-query";
+import { ImagePreview } from "./media/ImagePreview";
+import { VideoPreview } from "./media/VideoPreview";
 
 export function List({ values }: { values?: NasaSearchParams }) {
 
@@ -78,23 +80,16 @@ export function List({ values }: { values?: NasaSearchParams }) {
               <Heading h2>{item.data[0].title}</Heading>
               {/* Media types to render */}
               {item.data[0].media_type === "image" && (
-                item.links ? (
-                  <img
-                    src={item.links[0].href}
-                    alt={item.data[0].title}
-                    style={{ maxWidth: '100%' }}
-                  />
-                ) : (
-                  <Text>Image preview not available</Text>
-                ))}
+                <ImagePreview
+                  links={item.links}
+                  title={item.data[0].title}
+                />
+              )}
               {item.data[0].media_type === "video" && (
-                item.links ? (
-                  <video controls style={{ maxWidth: '100%' }}>
-                    <source src={item.links[0].href} />
-                  </video>
-                ) : (
-                  <Text>Video preview not available</Text>
-                )
+                <VideoPreview
+                  links={item.links}
+                  title={item.data[0].title}
+                /> 
               )}
               {item.data[0].media_type === "audio" && (
                 item.href ? (
