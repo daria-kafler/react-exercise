@@ -1,6 +1,6 @@
 "use client";
 
-import { Text, Box, Heading } from "@cruk/cruk-react-components";
+import { Box, Heading } from "@cruk/cruk-react-components";
 import { NasaResponse, NasaSearchParams } from "../types";
 import { urlNasaSearch } from "../services/nasa";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +9,8 @@ import { VideoPreview } from "./media/VideoPreview";
 import { AudioPreview } from "./media/AudioPreview";
 import { TranscriptPreview } from "./media/TranscriptPreview";
 import { ToggleDescription } from "./media/ToggleDescription";
+import { validateNasaResponse } from "../utilities/validateNasaResponse";
+import { ErrorDisplay } from './ErrorDisplay';
 
 export function List({ values }: { values?: NasaSearchParams }) {
 
@@ -16,11 +18,43 @@ export function List({ values }: { values?: NasaSearchParams }) {
     ? urlNasaSearch(values as NasaSearchParams)
     : "";
 
-  const { data } = useQuery<NasaResponse>(
+  // Fetch data, validate data, handle errors
+  const { data, error, isError, isLoading} = useQuery<NasaResponse>(
     ["nasaSearch", values],
-    () => fetch(urlNasaSearchUrl).then((res) => res.json()),
-    { enabled: !!urlNasaSearchUrl.length },
+    () => 
+      fetch(urlNasaSearchUrl).then((response) => {
+        if (!response.ok) {
+          throw new Error(`'HTTP Error:' ${response.status}, for URL: ${urlNasaSearchUrl}`);
+        }
+        return response.json();
+      }),
+    { enabled: !!urlNasaSearchUrl.length,
+      retry: false, // disable retries
+     }
   );
+  
+  // Handle initial state message
+  if (!urlNasaSearchUrl.length) {
+    return null;
+  }
+  // Handle loading
+  if (isLoading && urlNasaSearchUrl.length > 0) {
+    return <ErrorDisplay error="Loading..." type="loading" />;
+  }
+
+  if (isError) {
+    // Note: Error may log twice in development potentially due to React StrictMode
+    return <ErrorDisplay error={error} />;
+  }
+
+  // Only validate data if we have it
+  if (data && !validateNasaResponse(data)) {
+    return <ErrorDisplay error={`Data validation failed: Invalid API response structure`} />;
+  }
+
+  if (!data?.collection?.items?.length) {
+    return <ErrorDisplay error="No results found" type="noResults" />;
+  }
 
   return (
     <Box>
@@ -67,4 +101,5 @@ export function List({ values }: { values?: NasaSearchParams }) {
       ))}
     </Box>
   );
-}
+};
+
