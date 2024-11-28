@@ -1,4 +1,4 @@
-import { Text } from "@cruk/cruk-react-components"
+import { Text, Button } from "@cruk/cruk-react-components"
 
 interface TranscriptPreviewProps {
     description: string;
@@ -60,7 +60,10 @@ export const TranscriptPreview: React.FC<TranscriptPreviewProps> =({ description
             aria-label="Click to read the full episode transcript (opens in a new window)"
             title="Opens in a new window"
         >
-        {`${description.slice(0,500)}... [Click to read the full episode transcript]`}
+        {`${description.slice(0,500)}...`}
+        <Button>
+            Click to read the full episode transcript
+        </Button>
       </Text>
     )
 }

@@ -8,6 +8,7 @@ import { ImagePreview } from "./media/ImagePreview";
 import { VideoPreview } from "./media/VideoPreview";
 import { AudioPreview } from "./media/AudioPreview";
 import { TranscriptPreview } from "./media/TranscriptPreview";
+import { ToggleDescription } from "./media/ToggleDescription";
 
 export function List({ values }: { values?: NasaSearchParams }) {
 
@@ -20,10 +21,6 @@ export function List({ values }: { values?: NasaSearchParams }) {
     () => fetch(urlNasaSearchUrl).then((res) => res.json()),
     { enabled: !!urlNasaSearchUrl.length },
   );
-
-  const truncateDescription = (text: String, maxLength: number ) => 
-    text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
-
 
   return (
     <Box>
@@ -61,7 +58,7 @@ export function List({ values }: { values?: NasaSearchParams }) {
                 />
               ) : (
                 item.data[0].description && (
-                  <Text>{truncateDescription(item.data[0].description, 500)}</Text>
+                  <ToggleDescription description={item.data[0].description} />
                 )
               )}
             </>
