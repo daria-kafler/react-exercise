@@ -7,10 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 import { ImagePreview } from "./media/ImagePreview";
 import { VideoPreview } from "./media/VideoPreview";
 import { AudioPreview } from "./media/AudioPreview";
-import { TranscriptPreview } from "./media/TranscriptPreview";
-import { ToggleDescription } from "./media/ToggleDescription";
 import { validateNasaResponse } from "../utilities/validateNasaResponse";
 import { ErrorDisplay } from './ErrorDisplay';
+import { DescriptionModal } from "./media/DescriptionModal";
 
 export function List({ values }: { values?: NasaSearchParams }) {
 
@@ -41,17 +40,17 @@ export function List({ values }: { values?: NasaSearchParams }) {
   if (isLoading && urlNasaSearchUrl.length > 0) {
     return <ErrorDisplay error="Loading..." type="loading" />;
   }
-
+  // TODO: my brain is mush. is this an api error? isn't it being handled above?
   if (isError) {
     // Note: Error may log twice in development potentially due to React StrictMode
     return <ErrorDisplay error={error} />;
   }
-
-  // Only validate data if we have it
+  // Validate incoming data, but only if we have it
   if (data && !validateNasaResponse(data)) {
     return <ErrorDisplay error={`Data validation failed: Invalid API response structure`} />;
   }
 
+  // Handle no results found
   if (!data?.collection?.items?.length) {
     return <ErrorDisplay error="No results found" type="noResults" />;
   }
@@ -59,7 +58,6 @@ export function List({ values }: { values?: NasaSearchParams }) {
   return (
     <Box>
       {/* TODO: Pagination if have time */}
-      {/* TODO: Loading message if have time */}
       {data?.collection.items.slice(0, 10).map((item, index) => (
         <Box key={index} marginBottom="s">
           {item.data[0] && (
@@ -84,16 +82,13 @@ export function List({ values }: { values?: NasaSearchParams }) {
                 title={item.data[0].title}
                 />
               )}
-
-              {/* Description is conditional for media type */}
-              {item.data[0].media_type === "audio" ? (
-                <TranscriptPreview 
-                  description={item.data[0].description}
+              {/* Description handling */}
+              {item.data[0].description && (
+                <DescriptionModal 
+                description={item.data[0].description}
+                title={item.data[0].title}
+                mediaType={item.data[0].media_type}
                 />
-              ) : (
-                item.data[0].description && (
-                  <ToggleDescription description={item.data[0].description} />
-                )
               )}
             </>
           )}
