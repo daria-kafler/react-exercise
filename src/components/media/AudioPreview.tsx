@@ -11,8 +11,8 @@ export const AudioPreview: React.FC<AudioPreviewProps> = ({ title, href }) => {
         return <Text>Audio not available</Text>
     }
     return  (
-        <audio controls>
-            <source src={href} title={title} aria-label="Audio media" />
+        <audio controls aria-label="Audio preview">
+            <source src={href} title={title} />
         </audio>
     );
 };
