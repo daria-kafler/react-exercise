@@ -17,19 +17,13 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ links, title }) => {
 
     const videoExtensions = ['.srt', '.vtt', '.mp4'];
     
-    // Find thumbnail and video links
-    let thumbnailLink = '';
-    let videoLink = '';
-    for (const link of links) {
-        if (link.render === 'image' && !thumbnailLink) {
-            thumbnailLink = link.href;
-        }
-        if (videoExtensions.some(extension => link.href?.endsWith(extension)) && !videoLink) {
-            videoLink = link.href;
-        }
+    // NASA API returns two links for videos
+    // First link (links[0]) is the thumbnail image
+    // Second link (links[1]) is the video file
+    const thumbnailLink = links.find(link => link.render === 'image')?.href || '';
+    const videoLink = links.find(link => 
+        videoExtensions.some(ext => link.href?.endsWith(ext)))?.href || '';
 
-        // if (thumbnailLink && videoLink) break;
-    }
     // If no video is available
     if (!videoLink) {
         return <Text>Video unavailable</Text>
@@ -43,7 +37,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ links, title }) => {
                     title={title}
                     controls
                     autoPlay
-                    style={{ maxWidth: '100%' }}
+                    style={{ maxWidth: '85%' }}
                 />
             </Box>
         );
@@ -66,7 +60,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ links, title }) => {
                     title={title}
                     controls
                     autoPlay
-                    style={{ maxWidth: '100%' }}
+                    style={{ minWidth: '85%' }}
                 />
             )}
         </Box>

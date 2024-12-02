@@ -75,6 +75,7 @@ export function Form({
           <TextField
             {...register("keywords")}
             errorMessage={errors.keywords?.message}
+            isInvalidVisible={true}
             label="Keywords"
             required
           />
@@ -97,6 +98,7 @@ export function Form({
           <TextField
             {...register("yearStart")}
             errorMessage={errors.yearStart?.message}
+            isInvalidVisible={true}
             label="Year start"
             required={false}
           />
