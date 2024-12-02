@@ -1,6 +1,7 @@
-// tests/mock/mockApi.ts
+
 import { Page } from "@playwright/test";
 import { mockNasaApiResponse } from "./mockNasaApiResponse";
+import { NASA_API_URL } from "../../services/nasa"; 
 
 // Scenarios for different API mock responses
 const mockApiScenarios = {
@@ -37,7 +38,7 @@ const mockApiScenarios = {
 export const mockApi = async (page: Page, scenario: keyof typeof mockApiScenarios) => {
   const responseBody = mockApiScenarios[scenario] || mockApiScenarios.default;
 
-  await page.route("**/nasa-api/**", (route) =>
+  await page.route(`${NASA_API_URL}**`, (route) =>
     route.fulfill({
       status: 200,
       contentType: "application/json",
