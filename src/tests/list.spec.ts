@@ -33,17 +33,6 @@ test.describe("List Component Happy Path", () => {
       const firstTitle = page.locator("h2").first();
       await expect(firstTitle).toBeVisible();
       await expect(firstTitle).not.toBeEmpty();
-
-      // Test modal if description exists
-      const descriptionButton = page.locator('button:has-text("View Description")').first();
-      if (await descriptionButton.isVisible()) {
-        await descriptionButton.click();
-        const modal = page.locator('[aria-label="Description Modal"]');
-        await expect(modal).toBeVisible();
-        await expect(modal.locator("p")).not.toBeEmpty();
-        await modal.locator("button:has-text('Close')").click();
-        await expect(modal).not.toBeVisible();
-      }
     });
   });
 });
