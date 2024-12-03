@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, TextField, Select, Text } from "@cruk/cruk-react-components";
+import { Box, Button, TextField, Select } from "@cruk/cruk-react-components";
 import { Dispatch, SetStateAction, useState } from "react";
 import { NasaSearchParams } from "../types";
 
@@ -77,18 +77,16 @@ export function Form({
   if (isminimised) {
     return (
       <Box 
-        padding="s" 
-        backgroundColor="backgroundLight" 
-        marginBottom="m"
         onClick={() => setIsminimised(false)}
         style={{ cursor: 'pointer' }}
         data-testid="minimised-form"
       >
         <Box>
           <Box>
-            <Text textSize="s" marginBottom="none">
-              Keywords: {currentKeywords} | Media type: {currentMediaType}
-            </Text>
+            <TextField 
+              label=""
+              placeholder={currentKeywords}>
+            </TextField>
           </Box>
           <Button
             appearance="secondary"

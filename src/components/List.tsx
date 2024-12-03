@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Heading } from "@cruk/cruk-react-components";
+import { Box, Heading, Text } from "@cruk/cruk-react-components";
 import { NasaResponse, NasaSearchParams } from "../types";
 import { urlNasaSearch } from "../services/nasa";
 import { useQuery } from "@tanstack/react-query";
@@ -10,8 +10,13 @@ import { AudioPreview } from "./media/AudioPreview";
 import { validateNasaResponse } from "../utilities/validateNasaResponse";
 import { ErrorDisplay } from './ErrorDisplay';
 import { DescriptionModal } from "./media/DescriptionModal";
+import { useState } from "react";
+
+
+const ITEMS_PER_PAGE = 10;
 
 export function List({ values }: { values?: NasaSearchParams }) {
+  const [currentPage, setCurrentPage] = useState(1);
 
   const urlNasaSearchUrl = values
     ? urlNasaSearch(values as NasaSearchParams)
@@ -40,7 +45,7 @@ export function List({ values }: { values?: NasaSearchParams }) {
   if (isLoading && urlNasaSearchUrl.length > 0) {
     return <ErrorDisplay error="Loading..." type="loading" />;
   }
-  // TODO: my brain is mush. is this an api error? isn't it being handled above?
+  // If request fails, stop rendering results and display an error
   if (isError) {
     // Note: Error may log twice in development potentially due to React StrictMode
     return <ErrorDisplay error={error} />;
@@ -55,9 +60,20 @@ export function List({ values }: { values?: NasaSearchParams }) {
     return <ErrorDisplay error="No results found" type="noResults" />;
   }
 
+  // PAGINATION TIME
+  const totalItems = data.collection.items.length;
+  const startIndex = (currentPage -1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+
   return (
     <Box>
       {/* TODO: Pagination if have time */}
+      <Box>
+        <Text>
+          Showing <strong>{startIndex + 1} - {endIndex}</strong> out of <strong>{totalItems}</strong> for: {values?.keywords}
+        </Text>
+      </Box>
+      {/* Results List */}
       {data?.collection.items.slice(0, 10).map((item, index) => (
         <Box key={index} marginBottom="s">
           {item.data[0] && (
