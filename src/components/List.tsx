@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Heading, Text } from "@cruk/cruk-react-components";
+import { Box, Heading, Text, Pagination } from "@cruk/cruk-react-components";
 import { NasaResponse, NasaSearchParams } from "../types";
 import { urlNasaSearch } from "../services/nasa";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +22,13 @@ export function List({ values }: { values?: NasaSearchParams }) {
     ? urlNasaSearch(values as NasaSearchParams)
     : "";
 
-  // Fetch data, validate data, handle errors
+  // Pagination!
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  }
+
+  // Fetch data
   const { data, error, isError, isLoading} = useQuery<NasaResponse>(
     ["nasaSearch", values],
     () => 
@@ -32,25 +38,30 @@ export function List({ values }: { values?: NasaSearchParams }) {
         }
         return response.json();
       }),
-    { enabled: !!urlNasaSearchUrl.length,
-      retry: false, // disable retries
+    { enabled: !!urlNasaSearchUrl.length, // Fetch only if we have search params
+      retry: false, // Don't retry failed requests
+      onSuccess: () => {
+        // For new search reset to page 1 and scroll to top
+        setCurrentPage(1);
+        window.scrollTo(0, 0);
+      }
      }
   );
   
-  // Handle initial state message
+  // Initial app state. Checks for search params, which we don't expect to exist
   if (!urlNasaSearchUrl.length) {
     return null;
   }
-  // Handle loading
+  // Show loading state while making request to API
   if (isLoading && urlNasaSearchUrl.length > 0) {
     return <ErrorDisplay error="Loading..." type="loading" />;
   }
   // If request fails, stop rendering results and display an error
+  // Note: Error may log twice in development potentially due to React StrictMode
   if (isError) {
-    // Note: Error may log twice in development potentially due to React StrictMode
     return <ErrorDisplay error={error} />;
   }
-  // Validate incoming data, but only if we have it
+  // Validate incoming data structure, but only if we have it
   if (data && !validateNasaResponse(data)) {
     return <ErrorDisplay error={`Data validation failed: Invalid API response structure`} />;
   }
@@ -60,21 +71,21 @@ export function List({ values }: { values?: NasaSearchParams }) {
     return <ErrorDisplay error="No results found" type="noResults" />;
   }
 
-  // PAGINATION TIME
+  // Results pagination info bar
   const totalItems = data.collection.items.length;
-  const startIndex = (currentPage -1) * ITEMS_PER_PAGE;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+  const currentItems = data.collection.items.slice(startIndex, endIndex);
 
   return (
     <Box>
-      {/* TODO: Pagination if have time */}
       <Box>
         <Text>
           Showing <strong>{startIndex + 1} - {endIndex}</strong> out of <strong>{totalItems}</strong> for: {values?.keywords}
         </Text>
       </Box>
       {/* Results List */}
-      {data?.collection.items.slice(0, 10).map((item, index) => (
+      {currentItems.map((item, index) => (
         <Box key={index} marginBottom="s">
           {item.data[0] && (
             <>
@@ -110,6 +121,18 @@ export function List({ values }: { values?: NasaSearchParams }) {
           )}
         </Box>
       ))}
+      {/* Pagination controls */}
+      {totalItems > ITEMS_PER_PAGE && (
+        <Box marginTop="m">
+          <Pagination
+            current={currentPage}
+            perPage={ITEMS_PER_PAGE}
+            items={totalItems}
+            pagerCallback={handlePageChange}
+            aria-label="Bottom pagination"
+          />
+        </Box>
+      )}
     </Box>
   );
 };
