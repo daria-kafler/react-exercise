@@ -46,6 +46,10 @@ export const initialData = {
   yearStart: "",
 } as unknown as FormValues;
 
+type FormProps = {
+  setValues: Dispatch<SetStateAction<NasaSearchParams | undefined>>;
+};
+
 /**
  * Search form component for NASA media library.
  * Features:
@@ -57,11 +61,7 @@ export const initialData = {
  * @param {Object} props - Component props
  * @param {Function} props.setValues - Callback to update search parameters
  */
-export function Form({
-  setValues,
-}: {
-  setValues: Dispatch<SetStateAction<NasaSearchParams | undefined>>;
-}) {
+export function Form({ setValues }: FormProps) {
   // State for minimised/expanded form view
   const [isminimised, setIsminimised] = useState(false);
 
