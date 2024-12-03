@@ -53,6 +53,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ links, title }) => {
                     style={{ maxWidth: '85%', cursor: 'pointer' }}
                     onClick={() => setIsVideo(true)}
                     aria-label="Video preview thumbnail"
+                    data-testid="video-thumbnail"
                 />
             ) : (
                 <video 
@@ -62,6 +63,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ links, title }) => {
                     autoPlay
                     style={{ minWidth: '85%' }}
                     aria-label="Play video"
+                    data-testid="video-component"
                 />
             )}
         </Box>

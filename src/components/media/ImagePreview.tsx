@@ -17,7 +17,8 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ links, title }) => {
         <img 
             src={imageLink}
             alt={title}
-            aria-label="Image preview"
+            aria-label="Image"
+            data-testid="image-component"
             style={{ maxWidth: '100%' }}
         />
     );

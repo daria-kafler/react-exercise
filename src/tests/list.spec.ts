@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test.describe("List Component Happy Path", () => {
   const mediaTypes = [
-    { type: "image", selector: 'img[aria-label="Image preview"]' },
+    { type: "image", selector: 'img[aria-label="Image"]' },
     { type: "video", selector: 'img[aria-label="Video preview thumbnail"]' },
     { type: "audio", selector: 'audio[aria-label="Audio preview"]' },
   ];
@@ -10,7 +10,8 @@ test.describe("List Component Happy Path", () => {
   mediaTypes.forEach(({ type, selector }) => {
     test(`displays ${type} results correctly`, async ({ page }) => {
       // Navigate to the home page and simulate a search
-      await page.goto("/");
+      await page.goto('/');
+      await page.waitForLoadState('domcontentloaded');
       await page.fill('input[name="keywords"]', "apollo");
       await page.selectOption('select[name="mediaType"]', type);
       await page.click('button[type="submit"]');
