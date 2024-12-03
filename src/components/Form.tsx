@@ -91,7 +91,7 @@ export function Form({
    */
   const onSubmit: SubmitHandler<FormValues> = async (
     data,
-    e,
+    _e,
   ): Promise<void> => {
     setValues({
       keywords: data.keywords,

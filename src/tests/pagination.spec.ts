@@ -43,7 +43,7 @@ test.describe("List Pagination", () => {
     expect(secondPageTitles).not.toEqual(firstPageTitles);
 
     // Verify we can go back to first page
-    const prevPage = await page.getByRole("link", { name: "Prev" });
+    const prevPage = page.getByRole("link", { name: "Prev" });
     await expect(prevPage).toBeVisible();
     await prevPage.click();
 
@@ -67,7 +67,7 @@ test.describe("List Pagination", () => {
     await page.click('button[type="submit"]');
 
     await expect(page.getByText("Loading...")).not.toBeVisible();
-    const pagination = await page.getByRole("link", { name: "Next" });
+    const pagination = page.getByRole("link", { name: "Next" });
     // Go to page 2
     await pagination.click();
     await expect(page.getByText("Loading...")).not.toBeVisible();

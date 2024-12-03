@@ -70,7 +70,7 @@ export const DescriptionModal: React.FC<DescriptionModalProps> = ({
           /^([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)*(?:\s+\([A-Za-z\s]+\))?)\s*:(.+)/s,
         );
 
-        if (match && match[1] && match[2]) {
+        if (match?.[1]?.trim() && match?.[2]?.trim()) {
           return {
             speaker: match[1].trim(),
             content: match[2].trim(),

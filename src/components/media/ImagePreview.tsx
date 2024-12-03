@@ -7,8 +7,7 @@ interface ImagePreviewProps {
 }
 
 export const ImagePreview: React.FC<ImagePreviewProps> = ({ links, title }) => {
-  // Check for link array and if has href
-  const imageLink = links && links[0]?.href;
+  const imageLink = links?.[0]?.href;
 
   if (!imageLink) {
     return <Text>Image preview not available</Text>;

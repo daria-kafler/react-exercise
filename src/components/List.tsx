@@ -31,9 +31,7 @@ export function List({ values }: { values?: NasaSearchParams }) {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Construct NASA API URL from search parameters
-  const urlNasaSearchUrl = values
-    ? urlNasaSearch(values as NasaSearchParams)
-    : "";
+  const urlNasaSearchUrl = values ? urlNasaSearch(values) : "";
 
   /**
    * Handles page changes in the pagination component.
