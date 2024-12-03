@@ -1,3 +1,5 @@
+"use client";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -5,6 +7,13 @@ import { Box, Button, TextField, Select } from "@cruk/cruk-react-components";
 import { Dispatch, SetStateAction, useState } from "react";
 import { NasaSearchParams } from "../types";
 
+/**
+ * Zod schema for form validation.
+ * Defines validation rules for search form fields:
+ * - keywords: 2-50 characters
+ * - mediaType: must be audio, video, or image
+ * - yearStart: optional, must be valid year between 1900 and current year
+ */
 export const formSchema = z.object({
   keywords: z.string()
     .min(2,"Keywords must have at least 2 characters.")
@@ -28,21 +37,36 @@ export const formSchema = z.object({
     )
 });
 
+/** Type inference from the Zod schema for form values */
 export type FormValues = z.infer<typeof formSchema>;
 
+/** Initial form state with empty values */
 export const initialData = {
   keywords: "",
   mediaType: "",
   yearStart: "",
 } as unknown as FormValues;
 
+/**
+ * Search form component for NASA media library.
+ * Features:
+ * - Form validation using Zod
+ * - Interface minimised after submission
+ * - Real-time field validation
+ * - Error messaging
+ * 
+ * @param {Object} props - Component props
+ * @param {Function} props.setValues - Callback to update search parameters
+ */
 export function Form({
   setValues,
 }: {
   setValues: Dispatch<SetStateAction<NasaSearchParams | undefined>>;
 }) {
+  // State for minimised/expanded form view
   const [isminimised, setIsminimised] = useState(false);
 
+  // Initialise form with react-hook-form
   const formProps = useForm<FormValues>({
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -59,9 +83,13 @@ export function Form({
     watch,
   } = formProps;
 
+  // Watch form values for minimised view
   const currentKeywords = watch("keywords");
-  const currentMediaType = watch("mediaType");
 
+  /**
+   * Form submission handler
+   * Converts form data to search parameters and minimises the form
+   */
   const onSubmit: SubmitHandler<FormValues> = async (
     data,
     e,
@@ -74,6 +102,7 @@ export function Form({
     setIsminimised(true);
   };
 
+  // Render minimised form view
   if (isminimised) {
     return (
       <Box 
@@ -101,7 +130,7 @@ export function Form({
       </Box>
     );
   }
-
+  // Render expanded form view
   return (
     <Box marginBottom="l" data-testid="expanded-form">
       <form noValidate onSubmit={handleSubmit(onSubmit)}>

@@ -1,30 +1,62 @@
+"use client";
+
 import { Modal, Text, Button, Box, Heading } from "@cruk/cruk-react-components";
 import { useState } from 'react';
 import { NasaSearchParams } from '../../types';
 
-
+/**
+ * Props for the DescriptionModal component
+ * @interface DescriptionModalProps
+ */
 interface DescriptionModalProps {
+    /** Full description text to display */
     description: string;
+    /** Title of the media item */
     title: string;
+    /** Maximum length of preview text before truncation. Defaults to 500 characters */
     maxPreviewLength?: number;
+    /** Type of media - affects text formatting (especially for audio transcripts) */
     mediaType?: NasaSearchParams["mediaType"];
 }
 
+/**
+ * Represents a segment of text, to differentiate between speaker and content in interviews
+ * Used primarily for formatting audio transcripts
+ * @interface TextSegment
+ */
 interface TextSegment {
     speaker: string;
     content: string;
 }
 
+/**
+ * Modal component for displaying media descriptions with special handling for audio transcripts.
+ * Features:
+ * - Truncated preview with "Read more" button
+ * - Full text in modal dialog
+ * - Special formatting for audio transcripts (speaker segmentation)
+ * - Responsive layout with scrollable content
+ */
 export const DescriptionModal: React.FC<DescriptionModalProps> = ({
     description,
     title,
     maxPreviewLength = 500,
     mediaType
 }) => {
+    // Modal state
     const [showModal, setShowModal] = useState(false);
     const toggleModal = () => setShowModal(!showModal);
 
-    // Format audio transcripts with speaker names
+    /**
+     * Formats audio transcript text into speaker segments.
+     * Handles complex cases like:
+     * - Multiple speakers
+     * - Speaker names with titles/roles in parentheses
+     * - URLs in text (excluded from speaker detection)
+     * 
+     * @param text - Raw transcript text
+     * @returns Array of text segments with speaker attributions
+     */
     const formatAudioTranscript = (text: string): TextSegment[] => {
         // Split on full names that precede a colon, excluding URLs
         const segments = text.split(/(?=(?![hH]ttps?:\/\/)[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)*(?:\s+\([A-Za-z\s]+\))?\s*:)/);
@@ -47,7 +79,10 @@ export const DescriptionModal: React.FC<DescriptionModalProps> = ({
         }).filter(segment => segment.content.length > 0);
     };
 
-    // For non-audio content, just return the text as a single segment
+    /**
+     * Formats non-audio text as a single segment.
+     * Used for regular descriptions that don't need speaker segmentation.
+     */
     const formatRegularText = (text: string): TextSegment[] => {
         return [{
             speaker: '',
@@ -55,10 +90,12 @@ export const DescriptionModal: React.FC<DescriptionModalProps> = ({
         }];
     };
 
+    // Choose formatting based on media type
     const formattedSegments = mediaType === 'audio' 
         ? formatAudioTranscript(description)
         : formatRegularText(description);
 
+    // Create truncated preview if needed
     const plainPreview = description.length > maxPreviewLength
         ? `${description.slice(0, maxPreviewLength)}...`
         : description;
@@ -72,7 +109,7 @@ export const DescriptionModal: React.FC<DescriptionModalProps> = ({
                 </Text>
             </Box>
             
-            {/* Read More button in its own box */}
+            {/* Show Read More button only if content is truncated */}
             {description.length > maxPreviewLength && (
                 <Box marginBottom="m">
                     <Button
@@ -84,6 +121,7 @@ export const DescriptionModal: React.FC<DescriptionModalProps> = ({
                 </Box>
             )}
 
+            {/* Modal with full content */}
             {showModal && (
                 <Modal 
                     closeFunction={toggleModal} 
