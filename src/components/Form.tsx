@@ -1,17 +1,16 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { Box, Button, TextField, Select } from "@cruk/cruk-react-components";
-import { Dispatch, SetStateAction } from "react";
+import { Box, Button, TextField, Select, Text } from "@cruk/cruk-react-components";
+import { Dispatch, SetStateAction, useState } from "react";
 import { NasaSearchParams } from "../types";
 
 export const formSchema = z.object({
   keywords: z.string()
-  .min(2,"Keywords must have at least 2 characters.")  
-  .max(50,"Keywords must have at most 50 characters."),
+    .min(2,"Keywords must have at least 2 characters.")
+    .max(50,"Keywords must have at most 50 characters."),
   mediaType: z.enum(["audio", "video", "image"], {
-      errorMap: () => ({ message: "Please select a media type."})
+    errorMap: () => ({ message: "Please select a media type."})
   }),
   yearStart: z.string()
     .optional()
@@ -42,6 +41,8 @@ export function Form({
 }: {
   setValues: Dispatch<SetStateAction<NasaSearchParams | undefined>>;
 }) {
+  const [isminimised, setIsminimised] = useState(false);
+
   const formProps = useForm<FormValues>({
     mode: "onBlur",
     reValidateMode: "onBlur",
@@ -55,7 +56,11 @@ export function Form({
     handleSubmit,
     formState: { errors },
     register,
+    watch,
   } = formProps;
+
+  const currentKeywords = watch("keywords");
+  const currentMediaType = watch("mediaType");
 
   const onSubmit: SubmitHandler<FormValues> = async (
     data,
@@ -66,10 +71,42 @@ export function Form({
       yearStart: data.yearStart ? parseInt(data.yearStart) : 1900,
       mediaType: data.mediaType,
     });
-    };
-    
+    setIsminimised(true);
+  };
+
+  if (isminimised) {
+    return (
+      <Box 
+        padding="s" 
+        backgroundColor="backgroundLight" 
+        marginBottom="m"
+        onClick={() => setIsminimised(false)}
+        style={{ cursor: 'pointer' }}
+        data-testid="minimised-form"
+      >
+        <Box>
+          <Box>
+            <Text textSize="s" marginBottom="none">
+              Search: {currentKeywords} | Type: {currentMediaType}
+            </Text>
+          </Box>
+          <Button
+            appearance="secondary"
+            // size="s"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsminimised(false);
+            }}
+          >
+            Modify Search
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
-    <>
+    <Box marginBottom="l" data-testid="expanded-form">
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
         <Box marginBottom="m">
           <TextField
@@ -107,6 +144,6 @@ export function Form({
           <Button type="submit">Submit</Button>
         </Box>
       </form>
-    </>
+    </Box>
   );
 }

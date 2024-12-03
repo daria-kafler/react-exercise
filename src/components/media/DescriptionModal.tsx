@@ -66,7 +66,7 @@ export const DescriptionModal: React.FC<DescriptionModalProps> = ({
     return (
         <Box>
             {/* Preview text */}
-            <Box marginBottom="s">
+            <Box marginBottom="s" aria-label="description" data-testid="preview-text">
                 <Text>
                     {plainPreview}
                 </Text>
@@ -101,9 +101,10 @@ export const DescriptionModal: React.FC<DescriptionModalProps> = ({
                             paddingRight: '1rem',
                             marginBottom: '1rem'
                         }}
+                        data-testid="modal-content"
                     >
                         {formattedSegments.map((segment, index) => (
-                            <Box key={index} marginBottom="m">
+                            <Box key={index} marginBottom="m" data-testid="speaker-segmentation">
                                 {segment.speaker && (
                                     <Text
                                         style={{
