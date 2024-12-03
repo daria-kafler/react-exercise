@@ -36,5 +36,5 @@ export type LinkType = {
 };
 
 export type ErrorWithMessage = {
-  message: string
-}
+  message: string;
+};

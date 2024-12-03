@@ -15,26 +15,25 @@ import { NasaSearchParams } from "../types";
  * - yearStart: optional, must be valid year between 1900 and current year
  */
 export const formSchema = z.object({
-  keywords: z.string()
-    .min(2,"Keywords must have at least 2 characters.")
-    .max(50,"Keywords must have at most 50 characters."),
+  keywords: z
+    .string()
+    .min(2, "Keywords must have at least 2 characters.")
+    .max(50, "Keywords must have at most 50 characters."),
   mediaType: z.enum(["audio", "video", "image"], {
-    errorMap: () => ({ message: "Please select a media type."})
+    errorMap: () => ({ message: "Please select a media type." }),
   }),
-  yearStart: z.string()
+  yearStart: z
+    .string()
     .optional()
-    .refine(
-      (val) => !val || /^\d+$/.test(val),
-      "Please enter a valid number."
-    )
+    .refine((val) => !val || /^\d+$/.test(val), "Please enter a valid number.")
     .refine(
       (val) => !val || parseInt(val) >= 1900,
-      "Year start must be after 1900."
+      "Year start must be after 1900.",
     )
     .refine(
       (val) => !val || parseInt(val) <= new Date().getFullYear(),
-      "Year start must not be in the future."
-    )
+      "Year start must not be in the future.",
+    ),
 });
 
 /** Type inference from the Zod schema for form values */
@@ -54,7 +53,7 @@ export const initialData = {
  * - Interface minimised after submission
  * - Real-time field validation
  * - Error messaging
- * 
+ *
  * @param {Object} props - Component props
  * @param {Function} props.setValues - Callback to update search parameters
  */
@@ -105,17 +104,14 @@ export function Form({
   // Render minimised form view
   if (isminimised) {
     return (
-      <Box 
+      <Box
         onClick={() => setIsminimised(false)}
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: "pointer" }}
         data-testid="minimised-form"
       >
         <Box>
           <Box>
-            <TextField 
-              label=""
-              placeholder={currentKeywords}>
-            </TextField>
+            <TextField label="" placeholder={currentKeywords}></TextField>
           </Box>
           <Button
             appearance="secondary"

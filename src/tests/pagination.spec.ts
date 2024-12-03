@@ -4,12 +4,14 @@ test.describe("List Pagination", () => {
   test("handles pagination correctly", async ({ page }) => {
     // Perform search that will return multiple pages
     await page.goto("/");
-    await page.fill('input[name="keywords"]', "apollo");  // "apollo" typically returns many results
+    await page.fill('input[name="keywords"]', "apollo"); // "apollo" typically returns many results
     await page.selectOption('select[name="mediaType"]', "image");
     await page.click('button[type="submit"]');
 
     // Wait for initial results
-    await expect(page.getByText("Loading...")).not.toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Loading...")).not.toBeVisible({
+      timeout: 10000,
+    });
 
     // Check first page info
     const infoText = page.getByText(/Showing.*out of.*for:/);
@@ -22,7 +24,7 @@ test.describe("List Pagination", () => {
     expect(firstPageTitles.length).toBeLessThanOrEqual(10);
 
     // Ensure pagination control is visible
-    const pagination = page.getByRole('link', { name: 'Next' })
+    const pagination = page.getByRole("link", { name: "Next" });
     await expect(pagination).toBeVisible();
 
     // Navigate to second page
@@ -41,7 +43,7 @@ test.describe("List Pagination", () => {
     expect(secondPageTitles).not.toEqual(firstPageTitles);
 
     // Verify we can go back to first page
-    const prevPage = await page.getByRole('link', { name: 'Prev' })
+    const prevPage = await page.getByRole("link", { name: "Prev" });
     await expect(prevPage).toBeVisible();
     await prevPage.click();
 
@@ -63,19 +65,19 @@ test.describe("List Pagination", () => {
     await page.fill('input[name="keywords"]', "apollo");
     await page.selectOption('select[name="mediaType"]', "image");
     await page.click('button[type="submit"]');
-    
+
     await expect(page.getByText("Loading...")).not.toBeVisible();
-    const pagination = await page.getByRole('link', { name: 'Next' })
+    const pagination = await page.getByRole("link", { name: "Next" });
     // Go to page 2
     await pagination.click();
     await expect(page.getByText("Loading...")).not.toBeVisible();
-    
+
     // Verify we're on page 2
     let pageInfo = await page.getByText(/Showing.*out of.*for:/).textContent();
     expect(pageInfo).toContain("11 -");
 
     // Perform new search
-    const changeSearch = page.getByRole('button', { name: 'Change search' })
+    const changeSearch = page.getByRole("button", { name: "Change search" });
     await changeSearch.click();
     await page.fill('input[name="keywords"]', "moon");
     await page.click('button[type="submit"]');

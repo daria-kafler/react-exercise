@@ -1,7 +1,6 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-
 test.describe("HomePage tests", () => {
   test("can view homepage correctly without and accessibility errors", async ({
     page,
@@ -15,5 +14,3 @@ test.describe("HomePage tests", () => {
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 });
-
-

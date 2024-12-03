@@ -13,7 +13,7 @@ export const HomePage = () => {
     <Box marginTop="s" paddingTop="s">
       <Heading h1>React Exercise</Heading>
       <Form setValues={setValues} />
-      <List values={values}/>
+      <List values={values} />
     </Box>
   );
 };

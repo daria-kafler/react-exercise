@@ -8,7 +8,7 @@ import { ImagePreview } from "./media/ImagePreview";
 import { VideoPreview } from "./media/VideoPreview";
 import { AudioPreview } from "./media/AudioPreview";
 import { validateNasaResponse } from "../utilities/validateNasaResponse";
-import { ErrorDisplay } from './ErrorDisplay';
+import { ErrorDisplay } from "./ErrorDisplay";
 import { DescriptionModal } from "./media/DescriptionModal";
 import { useState } from "react";
 
@@ -22,7 +22,7 @@ const ITEMS_PER_PAGE = 10;
  * - Different media type renderers (image, video, audio)
  * - Error handling and loading states
  * - Results count and current search display
- * 
+ *
  * @param {Object} props - Component props
  * @param {NasaSearchParams} [props.values] - Search parameters from the form
  */
@@ -42,7 +42,7 @@ export function List({ values }: { values?: NasaSearchParams }) {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     window.scrollTo(0, 0);
-  }
+  };
 
   /**
    * Fetch and manage NASA API data using React Query.
@@ -50,24 +50,27 @@ export function List({ values }: { values?: NasaSearchParams }) {
    * - No retry on failure
    * - Resets to page 1 on new search
    */
-  const { data, error, isError, isLoading} = useQuery<NasaResponse>(
+  const { data, error, isError, isLoading } = useQuery<NasaResponse>(
     ["nasaSearch", values],
-    () => 
+    () =>
       fetch(urlNasaSearchUrl).then((response) => {
         if (!response.ok) {
-          throw new Error(`'HTTP Error:' ${response.status}, for URL: ${urlNasaSearchUrl}`);
+          throw new Error(
+            `'HTTP Error:' ${response.status}, for URL: ${urlNasaSearchUrl}`,
+          );
         }
         return response.json();
       }),
-    { enabled: !!urlNasaSearchUrl.length,
+    {
+      enabled: !!urlNasaSearchUrl.length,
       retry: false,
       onSuccess: () => {
         setCurrentPage(1);
         window.scrollTo(0, 0);
-      }
-     }
+      },
+    },
   );
-  
+
   // Handle different application states
   if (!urlNasaSearchUrl.length) {
     return null; // Initial app state, no search made yet
@@ -82,7 +85,11 @@ export function List({ values }: { values?: NasaSearchParams }) {
   }
 
   if (data && !validateNasaResponse(data)) {
-    return <ErrorDisplay error={`Data validation failed: Invalid API response structure`} />;
+    return (
+      <ErrorDisplay
+        error={`Data validation failed: Invalid API response structure`}
+      />
+    );
   }
 
   if (!data?.collection?.items?.length) {
@@ -100,7 +107,11 @@ export function List({ values }: { values?: NasaSearchParams }) {
       {/* Results count and search terms display */}
       <Box>
         <Text>
-          Showing <strong>{startIndex + 1} - {endIndex}</strong> out of <strong>{totalItems}</strong> for: {values?.keywords}
+          Showing{" "}
+          <strong>
+            {startIndex + 1} - {endIndex}
+          </strong>{" "}
+          out of <strong>{totalItems}</strong> for: {values?.keywords}
         </Text>
       </Box>
 
@@ -112,29 +123,20 @@ export function List({ values }: { values?: NasaSearchParams }) {
               <Heading h2>{item.data[0].title}</Heading>
               {/* Render media compinent based on type */}
               {item.data[0].media_type === "image" && (
-                <ImagePreview
-                  links={item.links}
-                  title={item.data[0].title}
-                />
+                <ImagePreview links={item.links} title={item.data[0].title} />
               )}
               {item.data[0].media_type === "video" && (
-                <VideoPreview
-                  links={item.links}
-                  title={item.data[0].title}
-                /> 
+                <VideoPreview links={item.links} title={item.data[0].title} />
               )}
               {item.data[0].media_type === "audio" && (
-                <AudioPreview 
-                href={item.href}
-                title={item.data[0].title}
-                />
+                <AudioPreview href={item.href} title={item.data[0].title} />
               )}
               {/* Render description modal */}
               {item.data[0].description && (
-                <DescriptionModal 
-                description={item.data[0].description}
-                title={item.data[0].title}
-                mediaType={item.data[0].media_type}
+                <DescriptionModal
+                  description={item.data[0].description}
+                  title={item.data[0].title}
+                  mediaType={item.data[0].media_type}
                 />
               )}
             </>
@@ -156,5 +158,4 @@ export function List({ values }: { values?: NasaSearchParams }) {
       )}
     </Box>
   );
-};
-
+}
