@@ -87,18 +87,17 @@ export function Form({
         <Box>
           <Box>
             <Text textSize="s" marginBottom="none">
-              Search: {currentKeywords} | Type: {currentMediaType}
+              Keywords: {currentKeywords} | Media type: {currentMediaType}
             </Text>
           </Box>
           <Button
             appearance="secondary"
-            // size="s"
             onClick={(e) => {
               e.stopPropagation();
               setIsminimised(false);
             }}
           >
-            Modify Search
+            Change search
           </Button>
         </Box>
       </Box>

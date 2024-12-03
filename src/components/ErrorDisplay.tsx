@@ -1,4 +1,4 @@
-import { Heading } from "@cruk/cruk-react-components";
+import { Heading, Loader } from "@cruk/cruk-react-components";
 import { ErrorWithMessage } from "../types"
 
 // Functions to check error types, stringify if needed
@@ -35,7 +35,7 @@ export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error, type = 'error
     const message = getErrorMessage(error);
     switch(type) {
         case 'loading':
-            return <Heading>Loading results, please wait...</Heading>;
+            return <Loader/>;
         case 'noResults':
             return <Heading>Results not found. Try broadening your search.</Heading>;
         default:

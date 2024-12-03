@@ -11,7 +11,6 @@ test.describe("API Mocking Setup Verification", () => {
         const url = route.request().url();
         if (url.includes('images-api.nasa.gov')) {
           interceptedUrl = url;
-          console.log(`Intercepted NASA API call for ${mediaType}:`, url);
           await route.fulfill({
             status: 200,
             contentType: 'application/json',
