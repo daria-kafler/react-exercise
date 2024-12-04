@@ -6,7 +6,7 @@
 
 This project is a **React/TypeScript** application that connects users to the **NASA Media Library API**. It allows users to search for media (images, videos, and audio clips) using a form built with **React Hook Form** and validated by **Zod**. The application retrieves results based on user inputs and displays them in a paginated list (10 items per page). Testing was done with **Playwright**.
 
- **App is deployed at** https://react-exercise/jet.vercel.app/
+ **App is deployed at** [react-exercise-jet.vercel.app](https://react-exercise-jet.vercel.app/)
 
   
 
