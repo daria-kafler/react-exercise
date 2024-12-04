@@ -6,7 +6,7 @@
 
 This project is a **React/TypeScript** application that connects users to the **NASA Media Library API**. It allows users to search for media (images, videos, and audio clips) using a form built with **React Hook Form** and validated by **Zod**. The application retrieves results based on user inputs and displays them in a paginated list (10 items per page). Testing was done with **Playwright**.
 
- **App is deployed at** https://react-exercise-fp0ryslot-darias-projects-ab964fd3.vercel.app/
+ **App is deployed at** https://react-exercise/jet.vercel.app/
 
   
 
@@ -26,7 +26,7 @@ This project is a **React/TypeScript** application that connects users to the **
 
 ```bash
 
-git  clone  git@github.com:daria-kafler/react-exercise.git
+git  clone  https://github.com/daria-kafler/cruk-backend-assignment.git
 
 cd  react-exercise
 
@@ -81,7 +81,7 @@ To run all tests
 
 ```bash
 
-npm  run  test
+npm  run  test --worker=1
 
 ```
 
@@ -91,7 +91,7 @@ To run specific tests
 
 ```bash
 
-npm  run  test  <file-path>
+npm  run  test  <file-path> --worker=1
 
 ```
 

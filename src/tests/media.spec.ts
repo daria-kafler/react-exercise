@@ -37,8 +37,12 @@ test.describe("Media Component Happy Path", () => {
     });
 
     // Check for audio elements in results
-    const audioResults = await page.locator("audio").first();
-    await expect(audioResults).toBeVisible();
+    const audioResults = page.locator("audio").first();
+    await expect(audioResults).toBeVisible({ timeout: 10000 });
+
+    // Scroll the first audio element into view (to account for Mobile Safari issues)
+    await audioResults.first().scrollIntoViewIfNeeded();
+    await expect(audioResults.first()).toBeVisible({ timeout: 10000 });
 
     // Check that we have the correct amount of results
     const resultsCount = await page.locator("audio").count();
@@ -64,7 +68,7 @@ test.describe("Media Component Happy Path", () => {
     });
 
     // Wait for thumbnail images to appear
-    const videoThumbnails = await page
+    const videoThumbnails = page
       .locator('img[data-testid="video-thumbnail"]')
       .first();
     await expect(videoThumbnails).toBeVisible();
