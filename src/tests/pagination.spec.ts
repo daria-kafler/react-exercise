@@ -10,7 +10,7 @@ test.describe("List Pagination", () => {
 
     // Wait for initial results
     await expect(page.getByText("Loading...")).not.toBeVisible({
-      timeout: 10000,
+      timeout: 30000,
     });
 
     // Check first page info

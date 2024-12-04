@@ -1,7 +1,11 @@
 import { Heading, Loader } from "@cruk/cruk-react-components";
 import { ErrorWithMessage } from "../types";
 
-// Functions to check error types, stringify if needed
+/**
+ * function to check if an error object has a message property
+ * @param error - Unknown error object to check
+ * @returns boolean indicating if error has message property
+ */
 function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
   return (
     typeof error === "object" &&
@@ -11,6 +15,11 @@ function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
   );
 }
 
+/**
+ * Converts any error type to ErrorWithMessage format
+ * @param maybeError - Any potential error object
+ * @returns Formatted error with message
+ */
 function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
   if (isErrorWithMessage(maybeError)) return maybeError;
 
@@ -21,16 +30,38 @@ function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
   }
 }
 
+/**
+ * Extracts error message from unknown error type
+ * @param error - Any error object
+ * @returns Error message string
+ */
 function getErrorMessage(error: unknown) {
   return toErrorWithMessage(error).message;
 }
 
 // ErrorDisplay logic
+/**
+ * Props for the ErrorDisplay component
+ * @interface ErrorDisplayProps
+ */
 interface ErrorDisplayProps {
+  /** Error object or message to display */
   error: unknown;
   type?: "error" | "loading" | "noResults";
 }
 
+/**
+ * Component to handle various error and loading states.
+ * Features:
+ * - Loading spinner
+ * - No results message
+ * - Generic error display
+ * - Error logging to console
+ *
+ * @param props - Component props
+ * @param props.error - Error object or message
+ * @param props.type - Type of error state to display
+ */
 export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({
   error,
   type = "error",

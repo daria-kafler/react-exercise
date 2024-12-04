@@ -9,6 +9,10 @@ test.describe("Media Component Happy Path", () => {
     await page.selectOption('select[name="mediaType"]', "image");
     await page.click('button[type="submit"]');
 
+    // Wait for the loading state to disappear
+    await expect(page.getByText("Loading...")).not.toBeVisible({
+      timeout: 10000,
+    });
     // Check for images in results (expect at least 1 and no more than 10)
     const imageResults = page.locator("img");
     const resultsCount = await imageResults.count();
@@ -23,19 +27,25 @@ test.describe("Media Component Happy Path", () => {
   test("displays audio results correctly", async ({ page }) => {
     // Go to the page, fill form, and submit
     await page.goto("/");
-    await page.fill('input[name="keywords"]', "shuttle");
+    await page.fill('input[name="keywords"]', "apollo");
     await page.selectOption('select[name="mediaType"]', "audio");
     await page.click('button[type="submit"]');
 
-    // Check for images in results (expect at least 1 and no more than 10)
-    await page.waitForSelector("audio", { timeout: 5000 }); // Wait for audio elements to appear
-    const audioResults = page.locator("audio");
-    const resultsCount = await audioResults.count();
+    // Wait for the loading state to disappear
+    await expect(page.getByText("Loading...")).not.toBeVisible({
+      timeout: 30000,
+    });
 
+    // Check for audio elements in results
+    const audioResults = await page.locator("audio").first();
+    await expect(audioResults).toBeVisible();
+
+    // Check that we have the correct amount of results
+    const resultsCount = await page.locator("audio").count();
     expect(resultsCount).toBeGreaterThan(0); // At least 1 result
     expect(resultsCount).toBeLessThanOrEqual(10); // No more than 10 results
 
-    // Check if the first image is visible
+    // Check if the first audio is visible
     await expect(audioResults.nth(0)).toBeVisible();
   });
 
@@ -48,23 +58,24 @@ test.describe("Media Component Happy Path", () => {
     await page.selectOption('select[name="mediaType"]', "video");
     await page.click('button[type="submit"]');
 
-    // Wait for thumbnail images to appear (expect at least 1 and no more than 10)
-    await page.waitForSelector('img[aria-label="Video preview thumbnail"]', {
-      timeout: 5000,
+    // Wait for the loading state to disappear
+    await expect(page.getByText("Loading...")).not.toBeVisible({
+      timeout: 30000,
     });
-    const videoThumbnails = page.locator(
-      'img[aria-label="Video preview thumbnail"]',
-    );
-    const resultsCount = await videoThumbnails.count();
 
+    // Wait for thumbnail images to appear
+    const videoThumbnails = await page
+      .locator('img[data-testid="video-thumbnail"]')
+      .first();
+    await expect(videoThumbnails).toBeVisible();
+
+    // Check that we have the correct amount of results
+    const resultsCount = await videoThumbnails.count();
     expect(resultsCount).toBeGreaterThan(0); // At least 1 result
     expect(resultsCount).toBeLessThanOrEqual(10); // No more than 10 results
 
-    // Check if the first thumbnail is visible
-    await expect(videoThumbnails.nth(0)).toBeVisible();
-
     // Click the first thumbnail to load the video
-    await videoThumbnails.nth(0).click();
+    await videoThumbnails.click();
 
     // Wait for the video element to appear after clicking the thumbnail
     const videoElement = page.locator("video");

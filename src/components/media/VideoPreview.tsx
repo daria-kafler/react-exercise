@@ -2,11 +2,28 @@ import { Text, Box } from "@cruk/cruk-react-components";
 import { LinkType } from "../../types";
 import { useState } from "react";
 
+/**
+ * Props for the VideoPreview component
+ * @interface VideoPreviewProps
+ */
 interface VideoPreviewProps {
+  /** Array of links from NASA API containing thumbnail and video URLs */
   links?: LinkType[];
   title: string;
 }
 
+/**
+ * Component to display video content from NASA API.
+ * Features:
+ * - Displays thumbnail image with click-to-play
+ * - Falls back to direct video if no thumbnail
+ * - Handles various video file formats
+ * - Shows error states for missing media
+ *
+ * @param props - Component props
+ * @param props.links - Array of media links from NASA API
+ * @param props.title - Title of the video
+ */
 export const VideoPreview: React.FC<VideoPreviewProps> = ({ links, title }) => {
   const [isVideo, setIsVideo] = useState(false); // Tracks if the video elemnt is shown
 
