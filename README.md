@@ -26,7 +26,7 @@ This project is a **React/TypeScript** application that connects users to the **
 
 ```bash
 
-git  clone  https://github.com/daria-kafler/cruk-backend-assignment.git
+git  clone  https://github.com/daria-kafler/react-exercise.git
 
 cd  react-exercise
 
